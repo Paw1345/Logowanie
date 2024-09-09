@@ -1,21 +1,13 @@
-# Używamy oficjalnego obrazu Pythona
+# Wybierz obraz bazowy
 FROM python:3.9-slim
 
-# Ustawiamy katalog roboczy
+# Ustaw katalog roboczy
 WORKDIR /app
 
-# Kopiujemy pliki do kontenera
+# Skopiuj pliki do kontenera
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 COPY . .
 
-# Instalujemy zależności
-RUN pip install --upgrade pip
-
-RUN pip install -r requirements.txt
-
-
-# Ustawiamy zmienną środowiskową, aby upewnić się, że Flask działa poprawnie
-ENV FLASK_APP=app.py
-
-# Uruchamiamy aplikację
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
-
+# Uruchom aplikację
+CMD ["python", "app.py"]

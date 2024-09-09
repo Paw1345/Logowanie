@@ -1,67 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 import requests
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Change this to a real secret key
+app.secret_key = 'your_secret_key'
 
-# Dummy user data
-users = {
-    'admin': 'password'
-}
+# Simulacja bazy danych
+users = {'user@example.com': 'password123'}
 
-def get_random_cat_image_url():
-    response = requests.get("https://api.thecatapi.com/v1/images/search")
-    response.raise_for_status()
-    data = response.json()
-    return data[0]['url']
-
-@app.route('/login', methods=['GET', 'POST'])
+# Strona logowania
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        if username in users and users[username] == password:
-            session['username'] = username
-            cat_image_url = get_random_cat_image_url()
-            return render_template('welcome.html', username=username, cat_image_url=cat_image_url)
+        if email in users and users[email] == password:
+            session['user'] = email
+            return redirect(url_for('dashboard'))
         else:
-            flash('Invalid credentials', 'danger')
+            return 'Invalid credentials', 401
     return render_template('login.html')
 
-@app.route('/welcome')
-def welcome():
-    if 'username' not in session:
+# Strona dashboard
+@app.route('/dashboard')
+def dashboard():
+    if 'user' not in session:
         return redirect(url_for('login'))
-    cat_image_url = get_random_cat_image_url()
-    return render_template('welcome.html', username=session['username'], cat_image_url=cat_image_url)
 
-@app.route('/home')
-def home():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    return render_template('home.html')
+    # Pobieranie losowego obrazka kota
+    response = requests.get('https://api.thecatapi.com/v1/images/search')
+    cat_image_url = response.json()[0]['url']
 
-@app.route('/user_panel', methods=['GET', 'POST'])
-def user_panel():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    
-    if request.method == 'POST':
-        action = request.form.get('action')
-        username = request.form['username']
-        
-        if action == 'add':
-            users[username] = 'password'  # Add user with a default password
-        elif action == 'delete' and username in users:
-            del users[username]
-    
-    return render_template('user_panel.html', users=users)
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
+    return render_template('dashboard.html', cat_image_url=cat_image_url)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(host='0.0.0.0', port=5000, debug=True)
