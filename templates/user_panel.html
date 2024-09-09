@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Panel</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5">User Panel</h2>
+        
+        <form method="POST" class="mt-4">
+            <h3>Add User</h3>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <button type="submit" name="action" value="add" class="btn btn-success">Add User</button>
+        </form>
+        
+        <form method="POST" class="mt-4">
+            <h3>Delete User</h3>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <button type="submit" name="action" value="delete" class="btn btn-danger">Delete User</button>
+        </form>
+
+        <h3 class="mt-4">Existing Users</h3>
+        <ul class="list-group">
+            {% for user in users.keys() %}
+                <li class="list-group-item">{{ user }}</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{{ url_for('home') }}" class="btn btn-primary mt-4">Back to Home</a>
+        <br><br>
+        <a href="{{ url_for('login') }}" class="btn btn-danger">Logout</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
