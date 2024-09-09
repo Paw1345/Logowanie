@@ -5,7 +5,10 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Skopiuj pliki do kontenera
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Skopiuj resztę plików do kontenera
 COPY . .
 
 # Uruchom aplikację
